@@ -1,6 +1,6 @@
 ﻿using Core.Interfaces;
+using Core.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Web.ViewModels;
 
 namespace Web.Controllers
@@ -8,15 +8,14 @@ namespace Web.Controllers
     public class InvoiceController : Controller
     {
         private readonly ILogger<InvoiceController> _logger;
-        private readonly IEmployee _employee;
-        private readonly ICustomer _customer;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IInvoiceItem _invoice;
 
-        public InvoiceController(ILogger<InvoiceController> logger, IEmployee employee, ICustomer customer, IInvoiceItem invoice)
+        public InvoiceController(ILogger<InvoiceController> logger, IUnitOfWork unitOfWork, IInvoiceItem invoice)
         {
             _logger = logger;
-            _employee = employee;
-            _customer = customer;
+            _unitOfWork = unitOfWork;
+
             _invoice = invoice;
         }
 
@@ -26,14 +25,33 @@ namespace Web.Controllers
         }
         public async Task<IActionResult> CreateInvoice()
         {
-            var customers = await _customer.GetAll();
-            var employees = await _employee.GetAll();
-            var invoiceItems = await _invoice.GetAll();
-            ViewBag.CustomerList = new SelectList(customers, "Id", "Name");
-            ViewBag.EmployeeList = new SelectList(employees, "Id", "Name");
-            ViewBag.InvoiceItems = new SelectList(invoiceItems, "Id", "Name");
-            var InvoiceVm = new InvoiceVM();
+            var customers = await _unitOfWork.Customer.GetAllAsync();
+            var employees = await _unitOfWork.Employee.GetAllAsync();
+            var products = await _unitOfWork.Product.GetAllAsync();
+            var InvoiceVm = new InvoiceVM
+            {
+                Customers = customers,
+                Employees = employees,
+                Products = products
+            };
+            InvoiceVm.Items.Add(new InvoiceItem { Quantity = 1, });
             return View(InvoiceVm);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddNewItem(InvoiceVM viewModel)
+        {
+            viewModel.Items.Add(new InvoiceItem() { Quantity = 1 }); // Add a new empty item
+            viewModel.Products = await _unitOfWork.Product.GetAllAsync();
+            return PartialView("_AddNewItem", viewModel);
+        }
+        [HttpPost]
+        public async Task<ActionResult> RemoveItem(InvoiceVM viewModel, int itemId)
+        {
+            viewModel.Products = await _unitOfWork.Product.GetAllAsync();
+            viewModel.Items.RemoveAt(itemId);
+            return PartialView("_AddNewItem", viewModel);
+
+
         }
     }
 }

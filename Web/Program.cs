@@ -1,7 +1,7 @@
 using Core.Interfaces;
-using Core.Models;
 using Data.Data;
 using Data.Services;
+using Data.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,9 +12,9 @@ builder.Services.AddDbContext<AppDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddScoped<IEmployee,EmployeeService>();
-builder.Services.AddScoped<ICustomer,CustomerService>();
+
 builder.Services.AddScoped<IInvoiceItem, InvoiceItemsService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 

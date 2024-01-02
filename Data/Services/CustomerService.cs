@@ -1,16 +1,8 @@
-﻿using Core.Interfaces;
-using Core.Models;
-using Data.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Data.Data;
 
 namespace Data.Services
 {
-    public class CustomerService : ICustomer
+    public class CustomerService
     {
         private readonly AppDbContext _context;
 
@@ -18,10 +10,7 @@ namespace Data.Services
         {
             _context = context;
         }
-        public async Task<IEnumerable<Customer>> GetAll()
-        {
-            var cusomers=await _context.Customers.ToListAsync();
-            return cusomers;
-        }
+
+
     }
 }
