@@ -60,20 +60,20 @@
                     <tfoot>
                         <tr>
                             <td colspan="6">
-                                <a style="width:100%" id="Add" class="btn btn-success">
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                <a style="width:100%" onclick="calculateAndDisplayTotalPrice()" id="Add" class="btn btn-success">
+                                    
                                     Add
                                 </a>
                             </td>
                         </tr>
-                        @* <tr>
+                        <tr>
                             <td>
-                                Total Price :
+                                total price :
                             </td>
-                            <td id="TotalPrice" calculateTotalPrice(); colspan="5">
-                                @Model.TotalPrice
+                            <td id="totalprice" calculatetotalprice(); colspan="5">
+                                
                             </td>
-                        </tr> *@
+                        </tr>
                     </tfoot>
                 </table>
             </div>
@@ -88,15 +88,14 @@
 @section Scripts {
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-
-    <script src="~/js/viewjs/totalprice.js" asp-append-version="true"></script>
+a    <script src="~/js/viewjs/totalprice.js" asp-append-version="true"></script>
     <script src="~/js/viewjs/addnewitem.js" asp-append-version="true"></script>
     <script src="~/js/viewjs/removeitem.js" asp-append-version="true"></script>
-
     <script src="~/js/viewjs/pricecaluclate.js" asp-append-version="true"></script>
     <script src="~/lib/select2/js/select2.full.js" asp-append-version="true"></script>
     <script src="~/lib/select2/js/select2.full.min.js" asp-append-version="true"></script>
     <script src="~/lib/select2/js/select2.js" asp-append-version="true"></script>
     <script src="~/lib/select2/js/select2.min.js" asp-append-version="true"></script>
+   
     
 }

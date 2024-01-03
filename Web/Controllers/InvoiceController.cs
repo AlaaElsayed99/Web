@@ -1,11 +1,8 @@
 ﻿using Core.Interfaces;
 using Core.Models;
-using Microsoft.AspNetCore.Mvc;
 using Core.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 using System.Transactions;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Web.Controllers
 {
@@ -81,7 +78,7 @@ namespace Web.Controllers
 
         }
         [HttpGet]
-        public async Task<IActionResult> Delete (int  id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (id == 0)
                 return View("Error");
@@ -89,8 +86,7 @@ namespace Web.Controllers
             var invoice = await _unitOfWork.Invoice.GetByIdAsync(i => i.Id == id);
 
             if (invoice == null)
-                return NotFound("Not Found");
-            var invoincesItems = await _unitOfWork.InvoiceItems.GetByIdAsync(i => i.InvoiceId == id);
+                return NotFound("Not Found"); var invoincesItems = await _unitOfWork.InvoiceItems.GetByIdAsync(i => i.InvoiceId == id);
             await _unitOfWork.InvoiceItems.DeleteAsync(invoincesItems);
             await _unitOfWork.Invoice.DeleteAsync(invoice);
             _unitOfWork.Complete();

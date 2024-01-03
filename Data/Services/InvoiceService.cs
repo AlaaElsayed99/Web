@@ -1,12 +1,7 @@
 ﻿using Core.Interfaces;
 using Core.Models;
-using Data.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Core.ViewModels;
+using Data.Data;
 
 namespace Data.Services
 {
@@ -20,7 +15,8 @@ namespace Data.Services
         }
         public async Task CreateAsync(InvoiceVM Vm)
         {
-            
+
+
             var Invoice = new Invoice
             {
                 CreatedAt = Vm.CreatedAt,
@@ -28,9 +24,8 @@ namespace Data.Services
                 EmployeeId = Vm.EmployeeId,
                 Items = Vm.Items,
             };
-
-            await _context.AddAsync(Invoice);   
-
+            await _context.AddAsync(Invoice);
         }
     }
 }
+
