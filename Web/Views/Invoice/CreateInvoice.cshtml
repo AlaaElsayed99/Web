@@ -1,4 +1,4 @@
-﻿@model Web.ViewModels.InvoiceVM
+﻿@model Core.ViewModels.InvoiceVM
 @{
     ViewData["Title"] = "CreateInvoice";
     var employee = new SelectList(Model.Employees, "Id", "Name");
@@ -10,6 +10,12 @@
 <div class="row">
     <div class="col-md-12">
         <form method="post" asp-action="Create" class="form-group">
+            
+                <div class="input-group mb-3">
+
+                <input hidden type="text" asp-for="Id" class="form-control" />
+                </div>
+
             <div class="d-flex justify-content-between">
                 <div class="input-group mb-3">
                     <label class="input-group-text" asp-for="CustomerId">Customer</label>
@@ -36,7 +42,7 @@
 
             <hr />
             <div id="InvoiceItems">
-                <table class="table">
+                <table id="TableID" class="table">
                     <thead class="thead-dark">
                         <tr>
                             <th style="width:5%" scope="col">#</th>
@@ -54,33 +60,43 @@
                     <tfoot>
                         <tr>
                             <td colspan="6">
-                                <a style="width:100%" id="Add" class="btn btn-success">Add</a>
+                                <a style="width:100%" id="Add" class="btn btn-success">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                    Add
+                                </a>
                             </td>
                         </tr>
-                        <tr>
+                        @* <tr>
                             <td>
                                 Total Price :
                             </td>
-                            <td id="TotalPrice" colspan="5">
+                            <td id="TotalPrice" calculateTotalPrice(); colspan="5">
+                                @Model.TotalPrice
                             </td>
-                        </tr>
+                        </tr> *@
                     </tfoot>
                 </table>
             </div>
             <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Save<i class="bi bi-check-lg"></i></button>
-                <a asp-action="Index" class="btn btn-outline-danger"><i class="bi bi-x"></i>Cancel</a>
+                <button type="submit" asp-action="CreateNewInvoice" class="btn btn-primary">Save</button>
+                <a asp-action="Index" asp-controller="Home" class="btn btn-outline-danger">Cancel</a>
             </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/js/viewjs/totalprice.js"></script>
-    <script src="~/js/viewjs/addnewitem.js"></script>
-    <script src="~/js/viewjs/removeitem.js"></script>
-    <script src="~/js/viewjs/pricecaluclate.js"></script>
 
+    <script src="~/js/viewjs/totalprice.js" asp-append-version="true"></script>
+    <script src="~/js/viewjs/addnewitem.js" asp-append-version="true"></script>
+    <script src="~/js/viewjs/removeitem.js" asp-append-version="true"></script>
+
+    <script src="~/js/viewjs/pricecaluclate.js" asp-append-version="true"></script>
+    <script src="~/lib/select2/js/select2.full.js" asp-append-version="true"></script>
+    <script src="~/lib/select2/js/select2.full.min.js" asp-append-version="true"></script>
+    <script src="~/lib/select2/js/select2.js" asp-append-version="true"></script>
+    <script src="~/lib/select2/js/select2.min.js" asp-append-version="true"></script>
+    
 }

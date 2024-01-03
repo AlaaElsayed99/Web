@@ -5,6 +5,7 @@ $(document).ready(function () {
 
         var totalPrice = price * quantity;
         $(`#Items_${rowIndex}__TotalPrice`).val(totalPrice);
+   
     }
 
     $(document).on('change', 'select.form-control', function () {

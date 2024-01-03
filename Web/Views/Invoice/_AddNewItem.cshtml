@@ -1,4 +1,4 @@
-﻿@model Web.ViewModels.InvoiceVM
+﻿@model Core.ViewModels.InvoiceVM
 @{
     var products = new SelectList(Model.Products, "Id", "Name");
 
@@ -27,11 +27,16 @@
             <input type="number" asp-for="@Model.Items[i].Quantity" value="@Model.Items[i].Quantity" class="form-control" />
         </td>
         <td>
-            <input value="@Model.Items[i].Price" type="number" asp-for="@Model.Items[i].Price" value="@Model.Items[i].Price" class="form-control" />
+            <input class="js-price" value="@Model.Items[i].Price" type="number" asp-for="@Model.Items[i].Price" value="@Model.Items[i].Price" class="form-control" />
         </td>
         <td>
             <input asp-for="@Model.Items[i].TotalPrice" disabled type="number" value="@Model.Items[i].TotalPrice" class="form-control" />
         </td>
-        <td><a onclick="Remove(@i)" class="btn btn-danger" style="width:100%">Delete</a></td>
+        <td>
+            <a onclick="Remove(@i)" class="btn btn-danger" style="width:100%">
+                <i class="bi bi-trash-fill"></i>
+                Delete
+            </a>
+        </td>
     </tr>
 }

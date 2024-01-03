@@ -13,7 +13,9 @@ builder.Services.AddDbContext<AppDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddScoped<IInvoiceItem, InvoiceItemsService>();
+builder.Services.AddScoped<IInvoiceItems, InvoiceItemsService>();
+builder.Services.AddScoped<IInvoice, InvoiceService>();
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 

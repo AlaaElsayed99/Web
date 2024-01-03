@@ -1,4 +1,4 @@
-﻿@model Web.ViewModels.InvoiceVM
+﻿@model Core.ViewModels.InvoiceVM
 @{
     ViewData["Title"] = "CreateInvoice";
     var employee = ViewBag.EmployeeList;
@@ -70,15 +70,5 @@
 @section Scripts {
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/lib/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
 
-    <script>
-        $('#CreatedAt').datepicker({
-            format: 'mm/dd/yyyy',
-            autoclose: true,
-            startDate: new Date('1950'),
-            endDate: new Date()
-
-        });
-    </script>
 }

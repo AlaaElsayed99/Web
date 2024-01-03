@@ -15,10 +15,16 @@ namespace Data.UnitOfWork
             Employee = new GenricService<Employee>(_context);
             Customer = new GenricService<Customer>(_context);
             Product = new GenricService<Product>(_context);
+            InvoiceItems = new GenricService<InvoiceItem>(_context);
+            Invoice = new GenricService<Invoice>(_context);
+
         }
         public IRepository<Employee> Employee { get; set; }
         public IRepository<Customer> Customer { get; set; }
         public IRepository<Product> Product { get; set; }
+        public IRepository<Invoice> Invoice { get; set; }
+        public IRepository<InvoiceItem> InvoiceItems { get; set; }
+
         public int Complete()
         {
             return _context.SaveChanges();

@@ -19,11 +19,11 @@ namespace Data.Services
             await _context.Set<T>().AddAsync(entity);
             return entity;
         }
-        public void DeleteAsync(T entity)
+        public async Task DeleteAsync(T entity)
         {
             _context.Set<T>().Remove(entity);
         }
-        public async Task<IEnumerable<T>> GetAllAsync(string[] includes = null)
+        public async Task<IEnumerable<T>> GetAllAsync(List<string> includes = null)
         {
             IQueryable<T> query = _context.Set<T>();
             if (includes != null)
@@ -34,7 +34,7 @@ namespace Data.Services
             return await query.ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(Expression<Func<T, bool>> predicate, string[] includes = null)
+        public async Task<T> GetByIdAsync(Expression<Func<T, bool>> predicate, List<string> includes = null)
         {
             IQueryable<T> query = _context.Set<T>();
 

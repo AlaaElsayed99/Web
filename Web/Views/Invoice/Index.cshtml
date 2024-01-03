@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Core.Models.Invoice>
+
+<h1>List of Invoices</h1>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Invoice ID</th>
+                <th>Customer ID</th>
+                <th>Employee ID</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var invoice in Model)
+            {
+                <tr>
+                    <td>@invoice.Id</td>
+                    <td>@invoice.customer.Name</td>
+                    <td>@invoice.employee.Name</td>
+                    <td>@invoice.CreatedAt.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Invoice Actions">
+                            <a class="btn btn-primary" asp-action="Details" asp-controller="Invoice" asp-route-id="@invoice.Id">Details</a>
+                            <a class="btn btn-danger" asp-action="Delete" asp-controller="Invoice" asp-route-id="@invoice.Id"
+                               onclick="return confirm('Are you sure you want to remove this invoice?')">Remove</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
