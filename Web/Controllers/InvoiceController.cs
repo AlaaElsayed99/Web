@@ -113,5 +113,48 @@ namespace Web.Controllers
             viewModel.Items.RemoveAt(itemId);
             return PartialView("_AddNewItem", viewModel);
         }
+        [HttpPost]
+        public async Task<IActionResult> Search(ParamsVm paramsVm)
+        {
+            var invoicesQuery = _unitOfWork.Invoice.GetAllAsync(new List<string> { "customer", "employee" });
+
+            if (!string.IsNullOrEmpty(paramsVm.customerName))
+            {
+                invoicesQuery = invoicesQuery.Where(i => i.customer.Name.Contains(paramsVm.customerName));
+            }
+
+            if (!string.IsNullOrEmpty(paramsVm.employeeName))
+            {
+                invoicesQuery = invoicesQuery.Where(i => i.employee.Name.Contains(paramsVm.employeeName));
+            }
+
+            if (paramsVm.from != null)
+            {
+                invoicesQuery = invoicesQuery.Where(i => i.CreatedAt >= paramsVm.from);
+            }
+
+            if (paramsVm.to != null)
+            {
+                invoicesQuery = invoicesQuery.Where(i => i.CreatedAt <= paramsVm.to);
+            }
+
+            var invoices = await invoicesQuery.ToListAsync();
+
+            var indexVMList = invoices.Select(invoice => new IndexVM
+            {
+                Id = invoice.Id,
+                CustomerId = invoice.CustomerId,
+                Customer = invoice.customer,
+                EmployeeId = invoice.EmployeeId,
+                Employee = invoice.employee,
+                Items = invoice.Items,
+                CreatedAt = invoice.CreatedAt
+            }).ToList();
+
+            ViewBag.Params = paramsVm;
+
+            return View("Index", indexVMList);
+        }
+
     }
 }
