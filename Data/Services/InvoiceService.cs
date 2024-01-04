@@ -16,7 +16,6 @@ namespace Data.Services
         public async Task CreateAsync(InvoiceVM Vm)
         {
 
-
             var Invoice = new Invoice
             {
                 CreatedAt = Vm.CreatedAt,

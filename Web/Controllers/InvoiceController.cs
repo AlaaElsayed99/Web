@@ -21,9 +21,20 @@ namespace Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var Invoices = await _unitOfWork.Invoice.GetAllAsync(new List<string> { "customer", "employee" });
-            return View(Invoices);
+            var invoices = await _unitOfWork.Invoice.GetAllAsync(new List<string> { "customer", "employee" });
+
+            
+
+            return View(invoices.Select(invoice => new IndexVM
+            {
+                Id = invoice.Id,
+                customer = invoice.customer, // Implement a mapping method for CustomerViewModel
+                employee = invoice.employee, // Implement a mapping method for EmployeeViewModel
+                Items = invoice.Items,
+                CreatedAt = invoice.CreatedAt
+            }).ToList());
         }
+
         [HttpGet]
         public async Task<IActionResult> CreateInvoice()
         {
@@ -116,7 +127,7 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Search(ParamsVm paramsVm)
         {
-            var invoicesQuery = _unitOfWork.Invoice.GetAllAsync(new List<string> { "customer", "employee" });
+            var invoicesQuery =await _unitOfWork.Invoice.GetAllAsync(new List<string> { "customer", "employee" });
 
             if (!string.IsNullOrEmpty(paramsVm.customerName))
             {
@@ -138,20 +149,19 @@ namespace Web.Controllers
                 invoicesQuery = invoicesQuery.Where(i => i.CreatedAt <= paramsVm.to);
             }
 
-            var invoices = await invoicesQuery.ToListAsync();
+            var invoices =  invoicesQuery.ToList();
 
             var indexVMList = invoices.Select(invoice => new IndexVM
             {
                 Id = invoice.Id,
                 CustomerId = invoice.CustomerId,
-                Customer = invoice.customer,
+                customer = invoice.customer,
                 EmployeeId = invoice.EmployeeId,
-                Employee = invoice.employee,
+                employee = invoice.employee,
                 Items = invoice.Items,
                 CreatedAt = invoice.CreatedAt
             }).ToList();
 
-            ViewBag.Params = paramsVm;
 
             return View("Index", indexVMList);
         }

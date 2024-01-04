@@ -48,6 +48,12 @@ namespace Data.Services
 
             return await query.FirstOrDefaultAsync(predicate);
         }
+
+        public IQueryable<T> Queryable()
+        {
+            throw new NotImplementedException();
+        }
+
         public int SaveAsync()
         {
             
