@@ -16,28 +16,35 @@
                 <input hidden type="text" asp-for="Id" class="form-control" />
                 </div>
 
-            <div class="d-flex justify-content-between">
-                <div class="input-group mb-3">
-                    <label class="input-group-text" asp-for="CustomerId">Customer</label>
-                    <select asp-for="CustomerId" class="form-select" asp-items="custmer">
-                        <option value="0">Choose..</option>
-                    </select>
+            <div class="row">
+                <div class="col-4">
+                    <div class="input-group ">
+                        <label class="input-group-text" asp-for="CustomerId">Customer</label>
+                        <select required asp-for="CustomerId" class="form-select" asp-items="custmer">
+                            <option value="">Choose..</option>
+                        </select>
+
+                    </div>
                     <span asp-validation-for="CustomerId" class="text-danger"></span>
                 </div>
-
-                <div class="input-group mb-3">
-                    <label class="input-group-text" asp-for="EmployeeId">Employee</label>
-                    <select asp-for="EmployeeId" class="form-select" asp-items="employee">
-                        <option value="0">Choose..</option>
-                    </select>
+                <div class="col-4">
+                    <div class="input-group ">
+                        <label class="input-group-text" asp-for="EmployeeId">Employee</label>
+                        <select required asp-for="EmployeeId" class="form-select" asp-items="employee">
+                            <option value="">Choose..</option>
+                        </select>
+                    </div>
                     <span asp-validation-for="EmployeeId" class="text-danger"></span>
                 </div>
 
-                <div class="input-group mb-3">
-                    <label class="input-group-text" asp-for="CreatedAt">Created At</label>
-                    <input type="date" asp-for="CreatedAt" class="form-control datepicker" value="" />
+               <div class="col-4">
+                    <div class="input-group ">
+                        <label class="input-group-text" asp-for="CreatedAt">Created At</label>
+                        <input type="date" asp-for="CreatedAt" class="form-control" value="" />
+                    </div>
                     <span asp-validation-for="CreatedAt" class="text-danger"></span>
-                </div>
+               </div>
+
             </div>
 
             <hr />
@@ -60,17 +67,14 @@
                     <tfoot>
                         <tr>
                             <td colspan="6">
-                                <a style="width:100%" onclick="calculateAndDisplayTotalPrice()" id="Add" class="btn btn-success">
-                                    
+                                <a style="width:100%" onclick="calculateAndDisplayTotalPrice()" id="Add" class="btn btn-success">   
                                     Add
                                 </a>
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                                total price :
-                            </td>
-                            <td id="totalprice" calculatetotalprice(); colspan="5">
+                           
+                            <td id="totalprice" class="fw-bold" calculatetotalprice(); colspan="6">
                                 
                             </td>
                         </tr>
@@ -88,14 +92,8 @@
 @section Scripts {
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-a    <script src="~/js/viewjs/totalprice.js" asp-append-version="true"></script>
+   <script src="~/js/viewjs/totalprice.js" asp-append-version="true"></script>
     <script src="~/js/viewjs/addnewitem.js" asp-append-version="true"></script>
     <script src="~/js/viewjs/removeitem.js" asp-append-version="true"></script>
-    <script src="~/js/viewjs/pricecaluclate.js" asp-append-version="true"></script>
-    <script src="~/lib/select2/js/select2.full.js" asp-append-version="true"></script>
-    <script src="~/lib/select2/js/select2.full.min.js" asp-append-version="true"></script>
-    <script src="~/lib/select2/js/select2.js" asp-append-version="true"></script>
-    <script src="~/lib/select2/js/select2.min.js" asp-append-version="true"></script>
-   
-    
+    <script src="~/js/viewjs/pricecaluclate.js" asp-append-version="true"></script> 
 }

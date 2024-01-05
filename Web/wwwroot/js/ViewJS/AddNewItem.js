@@ -1,9 +1,9 @@
 $('#Add').click(function () {
     $.ajax({
-        url: "AddNewItem",
+        url: "Invoice/AddNewItem",
         type: 'POST',
         data: $('form').serialize(),
-        content: 'application/json',
+        //content: 'application/json',
         success: function (partialView) {
             console.log('AJAX request successful'); // Log success
             $('#Items').html(partialView);

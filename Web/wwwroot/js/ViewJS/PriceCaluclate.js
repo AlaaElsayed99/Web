@@ -15,6 +15,7 @@ $(document).ready(function () {
 
         $(`#Items_${rowIndex}__Price`).val(price);
         updateTotalPrice(rowIndex);
+        calculateAndDisplayTotalPrice();
     });
 
     $(document).on('input', 'input[type="number"]', function () {

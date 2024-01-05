@@ -9,7 +9,6 @@ namespace Core.Interfaces
         Task<T> CreateAsync(T entity);
         T UpdateAsync(T entity);
         Task DeleteAsync(T entity);
-        IQueryable<T> Queryable();
         int SaveAsync();
     }
 }

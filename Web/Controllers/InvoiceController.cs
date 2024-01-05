@@ -23,7 +23,7 @@ namespace Web.Controllers
         {
             var invoices = await _unitOfWork.Invoice.GetAllAsync(new List<string> { "customer", "employee" });
 
-            
+
 
             return View(invoices.Select(invoice => new IndexVM
             {
@@ -47,45 +47,41 @@ namespace Web.Controllers
                 Employees = employees,
                 Products = products
             };
-            InvoiceVm.Items.Add(new InvoiceItem { Quantity = 1, });
+            InvoiceVm.Items.Add(new InvoiceItem { Quantity = 1 });
             return View(InvoiceVm);
         }
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> CreateNewInvoice(InvoiceVM invoiceVM)
         {
-            if (invoiceVM is null)
+
+            if (ModelState.IsValid)
             {
-                var customers = await _unitOfWork.Customer.GetAllAsync();
-                var employees = await _unitOfWork.Employee.GetAllAsync();
-                var products = await _unitOfWork.Product.GetAllAsync();
-                var InvoiceVm = new InvoiceVM
+                using (var transaction = new TransactionScope())
                 {
-                    Customers = customers,
-                    Employees = employees,
-                    Products = products
-                };
-                InvoiceVm.Items.Add(new InvoiceItem { Quantity = 1, });
-                return View("CreateInvoice", InvoiceVm);
-            }
-            //return View("CreateInvoice", invoiceVM);
-            //if (!ModelState.IsValid)
-            //{
-            using (var transaction = new TransactionScope())
-            {
-                try
-                {
-                    await _invoice.CreateAsync(invoiceVM);
-                    _unitOfWork.Complete();
-                    transaction.Complete();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    transaction.Dispose();
-                    throw ex;
+                    try
+                    {
+                        await _invoice.CreateAsync(invoiceVM);
+                        _unitOfWork.Complete();
+                        transaction.Complete();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Dispose();
+                        throw ex;
+                    }
                 }
             }
+            var customers = await _unitOfWork.Customer.GetAllAsync();
+            var employees = await _unitOfWork.Employee.GetAllAsync();
+            var products = await _unitOfWork.Product.GetAllAsync();
+
+            invoiceVM.Customers = customers;
+            invoiceVM.Employees = employees;
+            invoiceVM.Products = products;
+            return View("CreateInvoice", invoiceVM);
+
 
         }
         [HttpGet]
@@ -121,36 +117,18 @@ namespace Web.Controllers
         public async Task<ActionResult> RemoveItem(InvoiceVM viewModel, int itemId)
         {
             viewModel.Products = await _unitOfWork.Product.GetAllAsync();
-            viewModel.Items.RemoveAt(itemId);
+            //var items = viewModel.Items;
+            var items = new List<InvoiceItem>(viewModel.Items); // Create a copy
+
+            items.RemoveAt(itemId);
+            viewModel.Items = items;
             return PartialView("_AddNewItem", viewModel);
         }
+
         [HttpPost]
         public async Task<IActionResult> Search(ParamsVm paramsVm)
         {
-            var invoicesQuery =await _unitOfWork.Invoice.GetAllAsync(new List<string> { "customer", "employee" });
-
-            if (!string.IsNullOrEmpty(paramsVm.customerName))
-            {
-                invoicesQuery = invoicesQuery.Where(i => i.customer.Name.Contains(paramsVm.customerName));
-            }
-
-            if (!string.IsNullOrEmpty(paramsVm.employeeName))
-            {
-                invoicesQuery = invoicesQuery.Where(i => i.employee.Name.Contains(paramsVm.employeeName));
-            }
-
-            if (paramsVm.from != null)
-            {
-                invoicesQuery = invoicesQuery.Where(i => i.CreatedAt >= paramsVm.from);
-            }
-
-            if (paramsVm.to != null)
-            {
-                invoicesQuery = invoicesQuery.Where(i => i.CreatedAt <= paramsVm.to);
-            }
-
-            var invoices =  invoicesQuery.ToList();
-
+            var invoices = await _invoice.SearchInvoice(paramsVm);
             var indexVMList = invoices.Select(invoice => new IndexVM
             {
                 Id = invoice.Id,
@@ -161,8 +139,6 @@ namespace Web.Controllers
                 Items = invoice.Items,
                 CreatedAt = invoice.CreatedAt
             }).ToList();
-
-
             return View("Index", indexVMList);
         }
 
