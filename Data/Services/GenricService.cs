@@ -34,6 +34,11 @@ namespace Data.Services
             return await query.ToListAsync();
         }
 
+        public async Task<IEnumerable<T>> GetAllAsyncWhere(Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>().Where(predicate).ToListAsync();
+        }
+
         public async Task<T> GetByIdAsync(Expression<Func<T, bool>> predicate, List<string> includes = null)
         {
             IQueryable<T> query = _context.Set<T>();

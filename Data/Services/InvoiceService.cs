@@ -16,15 +16,39 @@ namespace Data.Services
         }
         public async Task CreateAsync(InvoiceVM Vm)
         {
-
-            var Invoice = new Invoice
+            var invoice = new Invoice
             {
                 CreatedAt = Vm.CreatedAt,
                 CustomerId = Vm.CustomerId,
                 EmployeeId = Vm.EmployeeId,
-                Items = Vm.Items,
+                Items = new List<InvoiceItem>()
             };
-            await _context.AddAsync(Invoice);
+
+            foreach (InvoiceItem item in Vm.Items)
+            {
+                var existingItem = invoice.Items.FirstOrDefault(i => i.ProductId == item.ProductId);
+
+                if (existingItem != null)
+                {
+                    // Update existing InvoiceItem's Quantity and Price
+                    existingItem.Quantity += item.Quantity;
+                }
+                else
+                {
+                    // If not found, add the new InvoiceItem to the Invoice's Items list
+                    invoice.Items.Add(item);
+                }
+            }
+
+            await _context.AddAsync(invoice);
+        }
+
+        public async Task<Invoice> GetByIdIncludes(int id)
+        {
+            var invoice = await _context.Invoices.Include(i => i.employee)
+                .Include(i => i.customer).Include(i => i.Items).
+                ThenInclude(i => i.Product).FirstOrDefaultAsync(i => i.Id == id);
+            return invoice;
         }
 
         public async Task<List<Invoice>> SearchInvoice(ParamsVm paramsVm)

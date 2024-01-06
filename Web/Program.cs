@@ -3,6 +3,7 @@ using Data.Data;
 using Data.Services;
 using Data.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
+using NToastNotify;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,13 @@ builder.Services.AddScoped<IInvoice, InvoiceService>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-
+builder.Services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
+{
+    ProgressBar = true,
+    PositionClass = ToastPositions.BottomLeft,
+    PreventDuplicates = true,
+    CloseButton = true
+});
 
 var app = builder.Build();
 

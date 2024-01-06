@@ -1,0 +1,22 @@
+﻿@model IEnumerable<Core.ViewModels.IndexVM>
+
+
+        <!-- Loop through the invoices and display each row -->
+        @foreach (var invoice in Model)
+        {
+            <tr>
+                <td>@invoice.Id</td>
+                <td>@invoice.customer.Name</td>
+                <td>@invoice.employee.Name</td>
+                <td>@invoice.CreatedAt.ToString("yyyy-MM-dd")</td>
+                <td>
+                    <!-- Actions -->
+                    <div class="btn-group" role="group" aria-label="Invoice Actions">
+                        <a class="btn btn-primary" asp-action="Details" asp-controller="Invoice" asp-route-id="@invoice.Id">Details</a>
+                        <a class="btn btn-danger" asp-action="Delete" asp-controller="Invoice" asp-route-id="@invoice.Id"
+                           onclick="return confirm('Are you sure you want to remove this invoice?')">Remove</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    

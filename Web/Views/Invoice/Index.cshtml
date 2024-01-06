@@ -1,54 +1,64 @@
 ﻿@model IEnumerable<Core.ViewModels.IndexVM>
 @{
     ViewData["Title"] = "List of Invoices";
+    
 }
 
 <h1>@ViewData["Title"]</h1>
 <hr />
 
 <div style="display: flex; align-items: center; justify-content: flex-end;">
-    <form asp-action="Search" asp-controller="Invoice" method="post" style="display: flex; gap: 10px;">
-        <input placeholder="Customer Name" name="customerName" class="form-control" style="width:150px;" />
-        <input placeholder="Employee Name" name="employeeName" class="form-control" style="width:150px;" />
-        <input type="date" name="from" class="form-control" />
-        <input type="date" name="to" class="form-control" />
+    <form id="searchForm" method="post" style="display: flex; gap: 10px;">
+        <input placeholder="Customer Name" name="customerName" id="customerName" class="form-control" style="width:150px;" />
+        <input placeholder="Employee Name" name="employeeName" id="employeeName" class="form-control" style="width:150px;" />
+        <input type="date" name="from" id="fromDate" class="form-control" />
+        <input type="date" name="to" id="toDate" class="form-control" />
         <button type="submit" class="btn btn-success">Search</button>
-        <a href="@Url.Action("Index", "Invoice")" class="btn btn-outline-secondary">Cancel</a>
     </form>
 </div>
 
-
 <br />
 <br />
+<table class="table">
+    <!-- Table headers -->
+    <thead  class="thead-dark">
+        <tr>
+            <th>Invoice ID</th>
+            <th>Customer Name</th>
+            <th>Employee Name</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="searchResults">
+        @Html.Partial("_ReportInvoce",Model) 
+    </tbody>
+</table>
 
-<div class="table-responsive">
-    <table class="table table-bordered table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th>Invoice ID</th>
-                <th>Customer Name</th>
-                <th>Employee Name</th>
-                <th>Created At</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var invoice in Model)
-            {
-                <tr>
-                    <td>@invoice.Id</td>
-                    <td>@invoice.customer.Name</td>
-                    <td>@invoice.employee.Name</td>
-                    <td>@invoice.CreatedAt.ToString("yyyy-MM-dd")</td>
-                    <td>
-                        <div class="btn-group" role="group" aria-label="Invoice Actions">
-                            <a class="btn btn-primary" asp-action="Details" asp-controller="Invoice" asp-route-id="@invoice.Id">Details</a>
-                            <a class="btn btn-danger" asp-action="Delete" asp-controller="Invoice" asp-route-id="@invoice.Id"
-                               onclick="return confirm('Are you sure you want to remove this invoice?')">Remove</a>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+
+@section Scripts {
+    <script>
+        // Function to perform AJAX search
+        function searchInvoices() {
+            var formData = $('#searchForm').serialize(); // Serialize form data
+
+            $.ajax({
+                url: '@Url.Action("Search", "Invoice")', // Replace with your controller action URL
+                type: 'POST',
+                data: formData,
+                success: function (result) {
+                    $('#searchResults').html(result); // Update the search results container with the partial view content
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText); // Log any errors to the console
+                }
+            });
+        }
+
+        // Handle form submission
+        $('#searchForm').submit(function (e) {
+            e.preventDefault(); // Prevent default form submission
+            searchInvoices(); // Call the search function
+        });
+    </script>
+}

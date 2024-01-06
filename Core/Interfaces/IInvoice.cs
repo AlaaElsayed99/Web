@@ -8,5 +8,6 @@ namespace Core.Interfaces
     {
         Task CreateAsync(InvoiceVM Vm);
         Task<List<Invoice>> SearchInvoice(ParamsVm paramsVm);
+        Task<Invoice> GetByIdIncludes(int id);
     }
 }

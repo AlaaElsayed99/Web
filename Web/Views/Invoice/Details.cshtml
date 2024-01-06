@@ -1,79 +1,132 @@
-﻿
-@model Core.Models.Invoice
+﻿@model Core.Models.Invoice
+
 @{
-    ViewBag.Title = "Invoice Details";
+    ViewBag.Title = "Exciting Invoice Details";
 }
+<style>
+    
+    .invoice-container {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        font-family: cursive;
+    }
 
-<h2>Invoice Details</h2>
+    .invoice-table th, .invoice-table td {
+        
+    }
+</style>
 
-<div>
-    <h4>Invoice Information</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Invoice ID:</dt>
-        <dd class="col-sm-10">@Model.Id</dd>
+<title>@ViewBag.Title</title>
 
-        <dt class="col-sm-2">Created At:</dt>
-        <dd class="col-sm-10">@Model.CreatedAt.ToString("yyyy-MM-dd")</dd>
 
-        <!-- Display other properties as needed -->
+<div id="container" class="container">
+    <div class="invoice-container">
+       
 
-        <dt class="col-sm-2">Customer:</dt>
-        <dd class="col-sm-10">@Model.customer?.Name</dd>
+        <div>
+            <h4>Invoice Information</h4>
+            <hr />
+            <div class="row">
+            <div class="col-6 fw-bold">
 
-        <dt class="col-sm-2">Employee:</dt>
-        <dd class="col-sm-10">@Model.employee?.Name</dd>
-    </dl>
-</div>
+                    <p class="">Invoice ID: @Model.Id</p>
+                        
 
-<div>
-    <h4>Invoice Items</h4>
-    <hr />
-    <button class="btn btn-success" onclick="printTable()">Print</button>
-    <table class="table" id="printTable">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <!-- Add more columns as needed -->
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model.Items != null && Model.Items.Any())
-            {
-                @foreach (var item in Model.Items)
-                {
-                    <tr class="itemRow">
-                        <td>#</td>
-                        <td>@item.ProductId</td>
-                        <td>@item.Quantity</td>
-                        <td class="itemPrice">@item.Price</td>
-                        <!-- Display other item properties as needed -->
+                    <p class="">Created At: @Model.CreatedAt.ToString("yyyy-MM-dd")</p>
+                        
+
+
+
+                    <p class="">Customer: @Model.customer?.Name</p>
+                        
+
+                    <p class="">Employee: @Model.employee?.Name</p>
+                        
+            </div>
+            <div  class="col-6">
+                    <img class="w-100" src="~/logo.logo.png" />
+            </div>
+            </div>
+        </div>
+
+        <div>
+            <h4>Invoice Items</h4>
+            <hr />
+
+            <table class="table invoice-table" id="printTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total Price</th>
+                        <!-- Add more columns as needed -->
                     </tr>
-                    
-                }
-                <!-- Total Price row -->
-                <tr id="totalPriceRow">
-                    <td colspan="3">Total Price:</td>
-                    <td id="totalPriceCell"></td>
-                </tr>
-            }
-            else
-            {
-                <tr>
-                    <td colspan="4">No items found</td>
-                </tr>
-            }
-        </tbody>
-        <tfoot>
-            
-        </tfoot>
-    </table>
+                </thead>
+                <tbody>
+                    @if (Model.Items != null && Model.Items.Any())
+                    {
+                        var index = 1;
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr class="itemRow">
+                                <td>@index</td>
+                                <td>@item.Product.Name</td>
+                                <td>@item.Quantity</td>
+                                <td class="itemPrice">@item.Price</td>
+                                <td class="itemPrice">@(item.Price * item.Quantity)</td>
+
+                            </tr>
+                            index++;
+                        }
+
+
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4">No items found</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <hr />
+            <br />
+            <div class="text-end" style="margin-right:50px">
+
+                <h5>Total Price: @Model.Items.Sum(i => i.Price*i.Quantity)</h5>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="invoice-container my-3">
+        <button style="width:100%" onclick="printInvoice()" class="btn btn-success" onclick="printTable()">
+            Print
+        </button>
+    </div>
 </div>
 
+@section Scripts {
+    <!-- Add JavaScript for functionality -->
+    <script>
+        function printInvoice() {
+            // Select the whole invoice container
+            var printableContent = document.getElementById('container').innerHTML;
+            var originalContent = document.body.innerHTML;
 
-@section Scripts{
-    <script src="~/js/viewjs/details.js"></script>
+            // Replace the whole document body with the invoice content
+            document.body.innerHTML = printableContent;
+
+            // Print the modified document
+            window.print();
+
+            // Restore the original document content
+            document.body.innerHTML = originalContent;
+        }
+        // Add additional JavaScript for dynamic functionality if needed
+    </script>
 }

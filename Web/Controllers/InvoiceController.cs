@@ -2,6 +2,7 @@
 using Core.Models;
 using Core.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 using System.Transactions;
 
 namespace Web.Controllers
@@ -11,12 +12,15 @@ namespace Web.Controllers
         private readonly ILogger<InvoiceController> _logger;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IInvoice _invoice;
+        private readonly IToastNotification _toast;
 
-        public InvoiceController(ILogger<InvoiceController> logger, IUnitOfWork unitOfWork, IInvoice invoice)
+        public InvoiceController(ILogger<InvoiceController> logger, IUnitOfWork unitOfWork, IInvoice invoice,
+            IToastNotification toast)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
             _invoice = invoice;
+            _toast = toast;
         }
 
         public async Task<IActionResult> Index()
@@ -48,6 +52,7 @@ namespace Web.Controllers
                 Products = products
             };
             InvoiceVm.Items.Add(new InvoiceItem { Quantity = 1 });
+
             return View(InvoiceVm);
         }
         [HttpPost]
@@ -64,12 +69,14 @@ namespace Web.Controllers
                         await _invoice.CreateAsync(invoiceVM);
                         _unitOfWork.Complete();
                         transaction.Complete();
+                        _toast.AddSuccessToastMessage("Invoice create success");
                         return RedirectToAction(nameof(Index));
                     }
                     catch (Exception ex)
                     {
                         transaction.Dispose();
-                        throw ex;
+                        _toast.AddErrorToastMessage("Invoice error");
+
                     }
                 }
             }
@@ -93,17 +100,23 @@ namespace Web.Controllers
             var invoice = await _unitOfWork.Invoice.GetByIdAsync(i => i.Id == id);
 
             if (invoice == null)
-                return NotFound("Not Found"); var invoincesItems = await _unitOfWork.InvoiceItems.GetByIdAsync(i => i.InvoiceId == id);
-            await _unitOfWork.InvoiceItems.DeleteAsync(invoincesItems);
+                return NotFound("Not Found");
+            var invoincesItems =
+                await _unitOfWork.InvoiceItems.GetAllAsyncWhere(i => i.InvoiceId == id);
+            foreach (var item in invoincesItems)
+            {
+                await _unitOfWork.InvoiceItems.DeleteAsync(item);
+            }
+
             await _unitOfWork.Invoice.DeleteAsync(invoice);
             _unitOfWork.Complete();
-
+            _toast.AddSuccessToastMessage("Invoice Deleted");
             return RedirectToAction("Index");
         }
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var invoice = await _unitOfWork.Invoice.GetByIdAsync(s => s.Id == id, new List<string> { "customer", "employee", "Items" });
+            var invoice = await _invoice.GetByIdIncludes(id);
             return View(invoice);
         }
         [HttpPost]
@@ -139,7 +152,7 @@ namespace Web.Controllers
                 Items = invoice.Items,
                 CreatedAt = invoice.CreatedAt
             }).ToList();
-            return View("Index", indexVMList);
+            return PartialView("_ReportInvoce", indexVMList);
         }
 
     }
