@@ -23,10 +23,10 @@ namespace Web.Controllers
             _toast = toast;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageSize = 5, int pageNumber = 1)
         {
-            var invoices = await _unitOfWork.Invoice.GetAllAsync(new List<string> { "customer", "employee" });
-
+            var invoices = await _unitOfWork.Invoice
+                .GetAllAsync(new List<string> { "customer", "employee" }, pageSize: pageSize, pageNumber: pageNumber);
 
 
             return View(invoices.Select(invoice => new IndexVM
@@ -35,7 +35,9 @@ namespace Web.Controllers
                 customer = invoice.customer, // Implement a mapping method for CustomerViewModel
                 employee = invoice.employee, // Implement a mapping method for EmployeeViewModel
                 Items = invoice.Items,
-                CreatedAt = invoice.CreatedAt
+                CreatedAt = invoice.CreatedAt,
+                PageNumber = pageNumber,
+                PageSize = pageSize
             }).ToList());
         }
 
@@ -91,7 +93,7 @@ namespace Web.Controllers
 
 
         }
-        [HttpGet]
+        [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
             if (id == 0)

@@ -2,14 +2,21 @@
   "version": "1.0",
   "defaultProvider": "cdnjs",
   "libraries": [
-   
     
     {
-      "library": "bootstrap-icons@1.11.2",
-      "destination": "wwwroot/bootstrap-icons/",
+      "library": "bootswatch@5.3.2",
+      "destination": "wwwroot/lib/bootswatch/",
       "files": [
-        "bootstrap-icons.svg",
-        "font/bootstrap-icons.min.css"
+        "cerulean/bootstrap.min.css"
+      ]
+    },
+    {
+      "library": "sweetalert2@11.10.2",
+      "destination": "wwwroot/lib/sweetalert2/",
+      "files": [
+        "sweetalert2.min.js",
+        "sweetalert2.css",
+        "sweetalert2.all.min.js"
       ]
     }
   ]

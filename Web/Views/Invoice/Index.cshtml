@@ -4,7 +4,7 @@
     
 }
 
-<h1>@ViewData["Title"]</h1>
+<h2>@ViewData["Title"]</h2>
 <hr />
 
 <div style="display: flex; align-items: center; justify-content: flex-end;">
@@ -34,9 +34,37 @@
         @Html.Partial("_ReportInvoce",Model) 
     </tbody>
 </table>
+@{
+    int maxSize = 5; // Set your maximum page size here
+    bool hasItems = Model.Any();
+    bool isFirstPage = hasItems && Model.First().PageNumber == 1;
+    bool isLastPage = hasItems && Model.Last().PageNumber >= maxSize;
+
+    int nextPageNumber = isLastPage ? Model.Last().PageNumber : Model.Last().PageNumber + 1;
+    bool canAddNextPage = hasItems && Model.Select(i => i.Id).Count() < maxSize * (Model.Last().PageNumber - 1); // Check if enough items for the next page
+
+    string prevPageUrl = isFirstPage ? "" : Url.Action("Index", new { pageNumber = Model.First().PageNumber - 1 });
+    string nextPageUrl = isLastPage && !canAddNextPage ? "" : Url.Action("Index", new { pageNumber = nextPageNumber });
+}
+
+@if (hasItems)
+{
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                <a class="btn btn-success @(isFirstPage ? "disabled" : "")" href="@prevPageUrl"> Previous </a>
+                <a class="btn btn-success @(isLastPage && hasItems ? "disabled" : "")" href="@nextPageUrl"> Next </a>
+            </div>
+        </div>
+    </div>
+
+}
+
+
 
 
 @section Scripts {
+    <script src="~/js/viewjs/removeinvoicebyajax.js"></script>
     <script>
         // Function to perform AJAX search
         function searchInvoices() {

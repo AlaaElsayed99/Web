@@ -22,7 +22,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
 {
     ProgressBar = true,
-    PositionClass = ToastPositions.BottomLeft,
+    PositionClass = ToastPositions.BottomRight,
     PreventDuplicates = true,
     CloseButton = true
 });

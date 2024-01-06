@@ -23,7 +23,7 @@ namespace Data.Services
         {
             _context.Set<T>().Remove(entity);
         }
-        public async Task<IEnumerable<T>> GetAllAsync(List<string> includes = null)
+        public async Task<IEnumerable<T>> GetAllAsync(List<string> includes = null, int pageSize = 5, int pageNumber = 1)
         {
             IQueryable<T> query = _context.Set<T>();
             if (includes != null)
@@ -31,6 +31,14 @@ namespace Data.Services
                 {
                     query = query.Include(include);
                 }
+            if (pageSize > 0)
+            {
+                if (pageSize > 100)
+                {
+                    pageSize = 100;
+                }
+                query = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
+            }
             return await query.ToListAsync();
         }
 
