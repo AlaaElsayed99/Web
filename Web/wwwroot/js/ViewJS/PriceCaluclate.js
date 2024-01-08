@@ -7,7 +7,6 @@ $(document).ready(function () {
         $(`#Items_${rowIndex}__TotalPrice`).val(totalPrice);
    
     }
-
     $(document).on('change', 'select.form-control', function () {
         var selectedOption = $(this).find('option:selected');
         var price = selectedOption.attr('Price');
